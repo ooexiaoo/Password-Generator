@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #ffff00;
+    background-color: #c0c000;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -55,11 +55,7 @@ body {
   @media screen and (max-width: 768px) {
     .container {
       width: 80%; /* Adjust width for smaller screens */
-      padding: 10px; /* Adjust padding for smaller screens */
+      padding: 0px; /* Adjust padding for smaller screens */
     }
-  
-    input[type="range"],
-    input[type="text"] {
-      width: 100%; /* Full width for input elements on smaller screens */
-    }
+    
   }
