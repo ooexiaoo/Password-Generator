@@ -111,6 +111,5 @@ document.addEventListener('DOMContentLoaded', function () {
       const length = password.length;
       return length;
     }
-    
   });
   
