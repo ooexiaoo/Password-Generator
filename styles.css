@@ -21,3 +21,13 @@ body {
     cursor: pointer;
   }
   
+  @media screen and (max-width: 768px) {
+    body {
+      font-size: 25px; /* Increase the font size for smaller screens */
+      /* Add other necessary adjustments for smaller screens */
+    }
+
+    #length {
+      font-size: 25px;
+    }
+  }
