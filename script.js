@@ -72,27 +72,45 @@ document.addEventListener('DOMContentLoaded', function () {
     function changeBackgroundColor() {
       const passwordStrength = getPasswordStrength();
       let backgroundColor;
-      if (passwordStrength === 'weak') {
-        backgroundColor = '#ff9999'; // Red for weak passwords
-      } else if (passwordStrength === 'medium') {
-        backgroundColor = '#ffff99'; // Yellow for medium passwords
+    
+      const color1 = [255, 153, 153]; // Red for weak passwords
+      const color2 = [255, 255, 0]; // Yellow for medium passwords
+      const color3 = [153, 255, 153]; // Green for strong passwords
+    
+      const maxLength = 128;
+      const minLength = 1;
+    
+      // Calculate the interpolation value between 0 and 1 based on password length
+      let interpolation = (passwordStrength - minLength) / (maxLength - minLength);
+    
+      // Ensure interpolation value is within the range of 0 to 1
+      interpolation = Math.min(Math.max(interpolation, 0), 1);
+    
+      // Interpolate between colors based on the interpolation value
+      if (interpolation <= 0.5) {
+        backgroundColor = interpolateColor(color1, color2, interpolation * 2);
       } else {
-        backgroundColor = '#99ff99'; // Green for strong passwords
+        backgroundColor = interpolateColor(color2, color3, (interpolation - 0.5) * 2);
       }
+    
       document.body.style.transition = 'background-color 0.5s ease-in-out';
-      document.body.style.backgroundColor = backgroundColor;
+      document.body.style.backgroundColor = `rgb(${backgroundColor[0]}, ${backgroundColor[1]}, ${backgroundColor[2]})`;
     }
-  
+    
+    // Interpolate between two colors based on a given ratio
+    function interpolateColor(color1, color2, ratio) {
+      const result = [];
+      for (let i = 0; i < 3; i++) {
+        result.push(Math.round(color1[i] * (1 - ratio) + color2[i] * ratio));
+      }
+      return result;
+    }
+    
     function getPasswordStrength() {
       const password = passwordOutput.value;
       const length = password.length;
-      if (length < 12) {
-        return 'weak';
-      } else if (length < 94) {
-        return 'medium';
-      } else {
-        return 'strong';
-      }
+      return length;
     }
+    
   });
   
