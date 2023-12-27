@@ -36,16 +36,17 @@ body {
   
   button {
     margin-top: 10px;
+    margin-bottom: 10px;
     padding: 8px 16px;
     cursor: pointer;
     border-radius: 4px;
     border: none;
-    background-color: #66fa7f;
+    background-color: #000000;
     color: #fff;
   }
   
   button:hover {
-    background-color: #0056b3;
+    background-color: #2b2b2b;
   }
   
   #copyBtn {
@@ -57,5 +58,4 @@ body {
       width: 80%; /* Adjust width for smaller screens */
       padding: 0px; /* Adjust padding for smaller screens */
     }
-    
   }

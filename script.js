@@ -73,9 +73,9 @@ document.addEventListener('DOMContentLoaded', function () {
       const passwordStrength = getPasswordStrength();
       let backgroundColor;
     
-      const color1 = [255, 153, 153]; // Red for weak passwords
+      const color1 = [148, 0, 0]; // Red for weak passwords
       const color2 = [255, 255, 0]; // Yellow for medium passwords
-      const color3 = [153, 255, 153]; // Green for strong passwords
+      const color3 = [0, 148, 0]; // Green for strong passwords
     
       const maxLength = 128;
       const minLength = 1;
