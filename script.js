@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function changeBackgroundColor() {
       const passwordStrength = getPasswordStrength();
       let backgroundColor;
+      let emoji;
     
       const color1 = [148, 0, 0]; // Red for weak passwords
       const color2 = [255, 255, 0]; // Yellow for medium passwords
@@ -76,7 +77,24 @@ document.addEventListener('DOMContentLoaded', function () {
     
       // Ensure interpolation value is within the range of 0 to 1
       interpolation = Math.min(Math.max(interpolation, 0), 1);
+
+        // Set emoji based on password strength
+      if (passwordStrength >= 1 && passwordStrength <= 12) {
+        emoji = "😣"; // Emoji for weak passwords
+      } else if (passwordStrength >= 13 && passwordStrength <= 26) {
+        emoji = "😐"; // Emoji for slightly better passwords
+      } else if (passwordStrength >= 27 && passwordStrength <= 64) {
+        emoji = "😲"; // Emoji for strong passwords
+      } else if (passwordStrength >= 65 && passwordStrength <= 100) {
+        emoji = "😨"; // Emoji for very strong passwords
+      } else if (passwordStrength >= 101 && passwordStrength <= 128) {
+        emoji = "🤯"; // Emoji for very strong passwords
+      }
     
+            // Set the emoji to the password strength indicator
+      const strengthIndicator = document.getElementById('strengthIndicator');
+      strengthIndicator.textContent = emoji;
+
       // Interpolate between colors based on the interpolation value
       if (interpolation <= 0.5) {
         backgroundColor = interpolateColor(color1, color2, interpolation * 2);
@@ -87,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
       document.body.style.transition = 'background-color 0.5s ease-in-out';
       document.body.style.backgroundColor = `rgb(${backgroundColor[0]}, ${backgroundColor[1]}, ${backgroundColor[2]})`;
     }
-    
+
     // Interpolate between two colors based on a given ratio
     function interpolateColor(color1, color2, ratio) {
       const result = [];
