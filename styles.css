@@ -21,6 +21,96 @@ body {
   h1 {
     margin-bottom: 20px;
   }
+
+  .strength-meter {
+    margin: 20px 0;
+    text-align: center;
+  }
+  
+  .strength-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .strength-emoji {
+    font-size: 2.5em;
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+
+  .strength-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    margin: 5px 0;
+    overflow: hidden;
+  }
+
+  .strength-fill {
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+  }
+
+  .strength-text {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 3px;
+  }
+
+  /* Notification System */
+  .notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 5px;
+    color: white;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease-in-out;
+    z-index: 1000;
+    max-width: 300px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .notification.show {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .notification.success {
+    background-color: #2ecc71;
+  }
+
+  .notification.error {
+    background-color: #e74c3c;
+  }
+
+  .notification.warning {
+    background-color: #f39c12;
+  }
+
+  .notification.info {
+    background-color: #3498db;
+  }
+
+  /* Screen reader only class */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
   
 /* Reset default styles */
 input[type="range"] {

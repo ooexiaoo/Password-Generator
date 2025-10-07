@@ -8,39 +8,68 @@
   <link rel="icon" type="image/x-icon" href="/password.png">
 </head>
 <body>
-  <div class="container">
+  <div class="container" role="main">
     <h1>Password Generator</h1>
     <div>
-    <div>
-      <span id="strengthIndicator">🤔</span>
+    <div class="strength-meter">
+      <div class="strength-indicator">
+        <span id="strengthIndicator" class="strength-emoji">🤔</span>
+        <div id="strengthText" class="strength-text">Password Strength</div>
+      </div>
+      <div class="strength-bar">
+        <div id="strengthBar" class="strength-fill"></div>
+      </div>
     </div>
       <label for="lengthRange">Password Length:</label>
-      <input type="range" min="1" max="128" value="64" id="lengthRange">
-      <br>
-      <span id="lengthValue">64</span>
+      <input type="range" min="1" max="128" value="64" id="lengthRange" 
+             aria-valuemin="1" aria-valuemax="128" aria-valuenow="64" 
+             aria-labelledby="lengthLabel lengthValue">
+      <span id="lengthValue" aria-live="polite">64</span>
+      <span id="lengthLabel" class="sr-only">Password length in characters</span>
     </div>
     <div>
-      <label for="uppercaseCheck">Include Uppercase:</label>
-      <input type="checkbox" id="uppercaseCheck" checked>
+      <label for="uppercaseCheck">
+        <input type="checkbox" id="uppercaseCheck" checked 
+               aria-describedby="uppercaseDesc">
+        <span>Include Uppercase</span>
+      </label>
+      <span id="uppercaseDesc" class="sr-only">Adds A-Z to the password</span>
     </div>
     <div>
-      <label for="lowercaseCheck">Include Lowercase:</label>
-      <input type="checkbox" id="lowercaseCheck" checked>
+      <label for="lowercaseCheck">
+        <input type="checkbox" id="lowercaseCheck" checked 
+               aria-describedby="lowercaseDesc">
+        <span>Include Lowercase</span>
+      </label>
+      <span id="lowercaseDesc" class="sr-only">Adds a-z to the password</span>
     </div>
     <div>
-      <label for="numbersCheck">Include Numbers:</label>
-      <input type="checkbox" id="numbersCheck" checked>
+      <label for="numbersCheck">
+        <input type="checkbox" id="numbersCheck" checked 
+               aria-describedby="numbersDesc">
+        <span>Include Numbers</span>
+      </label>
+      <span id="numbersDesc" class="sr-only">Adds 0-9 to the password</span>
     </div>
     <div>
-      <label for="specialCharsCheck">Include Special Characters:</label>
-      <input type="checkbox" id="specialCharsCheck" checked>
+      <label for="specialCharsCheck">
+        <input type="checkbox" id="specialCharsCheck" checked 
+               aria-describedby="specialCharsDesc">
+        <span>Include Special Characters</span>
+      </label>
+      <span id="specialCharsDesc" class="sr-only">Adds !@#$%^&*()_+-=[]{}|;:,.<>? to the password</span>
     </div>
-    <button id="generateBtn">Generate Password</button>
+    <button id="generateBtn" aria-label="Generate a new password">Generate Password</button>
     <div>
-      <input type="text" id="passwordOutput" readonly>
-      <button id="copyBtn">Copy Password</button>
+      <input type="text" id="passwordOutput" readonly 
+             aria-label="Generated password" 
+             aria-live="polite">
+      <button id="copyBtn" aria-label="Copy password to clipboard">
+        <span aria-hidden="true">Copy Password</span>
+      </button>
     </div>
   </div>
+  <div id="notification" class="notification" role="alert" aria-live="assertive"></div>
   <script src="script.js"></script>
 </body>
 </html>
