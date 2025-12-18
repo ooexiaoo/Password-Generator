@@ -25,6 +25,13 @@ function showNotification(message, type = 'info', duration = 3000) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+  // Add terminal-style typing effect to header
+  const header = document.querySelector('h1');
+  if (header) {
+    header.classList.add('glitch-effect');
+    header.setAttribute('data-text', header.textContent);
+  }
+
   const lengthRange = document.getElementById('lengthRange');
   const lengthValue = document.getElementById('lengthValue');
   const uppercaseCheck = document.getElementById('uppercaseCheck');
@@ -36,9 +43,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const copyBtn = document.getElementById('copyBtn');
 
   lengthRange.addEventListener('input', function () {
+    // Add visual feedback to the range element
+    this.classList.add('length-changing');
+    setTimeout(() => {
+      this.classList.remove('length-changing');
+    }, 300);
+
     lengthValue.textContent = lengthRange.value;
     generatePassword();
-    changeBackgroundColor();
+    setTimeout(() => {
+      changeBackgroundColor();
+    }, 100); // Short delay to allow password to be updated
   });
 
   // Set initial ARIA attributes
@@ -46,9 +61,16 @@ document.addEventListener('DOMContentLoaded', function () {
   passwordOutput.setAttribute('aria-live', 'polite');
   
   generateBtn.addEventListener('click', function () {
+    // Add animation class to button
+    this.classList.add('generating-animation');
+
     this.setAttribute('aria-pressed', 'true');
     // Reset pressed state after animation
-    setTimeout(() => this.setAttribute('aria-pressed', 'false'), 200);
+    setTimeout(() => {
+      this.setAttribute('aria-pressed', 'false');
+      this.classList.remove('generating-animation');
+    }, 500); // Match the duration of the animation
+
     try {
       if (!(uppercaseCheck.checked || lowercaseCheck.checked || numbersCheck.checked || specialCharsCheck.checked)) {
         showNotification('Please select at least one character type', 'warning');
@@ -57,8 +79,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const password = generatePassword();
       if (password) {
-        changeBackgroundColor();
+        setTimeout(() => {
+          changeBackgroundColor();
+        }, 150); // Slight delay to allow password to be set
         showNotification('Password generated successfully!', 'success');
+
+        // Trigger a glow effect on the password field
+        const passwordField = document.getElementById('passwordOutput');
+        passwordField.classList.add('pulse-glow');
+        setTimeout(() => {
+          passwordField.classList.remove('pulse-glow');
+        }, 1000);
       }
     } catch (error) {
       console.error('Error generating password:', error);
@@ -71,9 +102,15 @@ document.addEventListener('DOMContentLoaded', function () {
   let copyTimeout;
   
   copyBtn.addEventListener('click', function () {
+    // Add animation effect to the copy button
+    this.classList.add('copy-animation');
+    setTimeout(() => {
+      this.classList.remove('copy-animation');
+    }, 300);
+
     // Clear any existing timeout
     if (copyTimeout) clearTimeout(copyTimeout);
-    
+
     // Update button state for screen readers
     this.setAttribute('aria-pressed', 'true');
     this.setAttribute('aria-label', 'Copying password...');
@@ -82,21 +119,21 @@ document.addEventListener('DOMContentLoaded', function () {
         showNotification('No password to copy', 'warning');
         return;
       }
-      
+
       passwordOutput.select();
       document.execCommand('copy');
-      
+
       // Show feedback
       const selection = window.getSelection();
       selection.removeAllRanges();
-      
+
       // Update button state and provide feedback
       const originalLabel = this.getAttribute('data-original-label') || 'Copy password to clipboard';
       this.setAttribute('aria-label', 'Password copied!');
       this.setAttribute('data-original-label', originalLabel);
-      
+
       showNotification('Password copied to clipboard!', 'success');
-      
+
       // Reset button state after delay
       copyTimeout = setTimeout(() => {
         this.setAttribute('aria-label', originalLabel);
@@ -111,15 +148,23 @@ document.addEventListener('DOMContentLoaded', function () {
   // Update ARIA attributes when checkboxes change
   [uppercaseCheck, lowercaseCheck, numbersCheck, specialCharsCheck].forEach(checkbox => {
     checkbox.addEventListener('change', () => {
+      // Add animation effect to the checkbox
+      checkbox.classList.add('checkbox-changing');
+      setTimeout(() => {
+        checkbox.classList.remove('checkbox-changing');
+      }, 300);
+
       // Update aria-checked and aria-invalid for screen readers
       const isValid = [uppercaseCheck, lowercaseCheck, numbersCheck, specialCharsCheck].some(cb => cb.checked);
       checkbox.setAttribute('aria-checked', checkbox.checked);
       checkbox.setAttribute('aria-invalid', !isValid);
-      
+
       // Update password if any checkbox changes
       if (isValid) {
         generatePassword();
-        changeBackgroundColor();
+        setTimeout(() => {
+          changeBackgroundColor();
+        }, 100); // Short delay to allow password to be updated
       } else {
         showNotification('Please select at least one character type', 'warning');
       }
@@ -129,14 +174,35 @@ document.addEventListener('DOMContentLoaded', function () {
   // Update password length value for screen readers
   lengthRange.addEventListener('input', function() {
     const value = this.value;
+
+    // Add animation to the length display
+    lengthValue.classList.add('length-value-changing');
+    setTimeout(() => {
+      lengthValue.classList.remove('length-value-changing');
+    }, 300);
+
     lengthValue.textContent = value;
     this.setAttribute('aria-valuenow', value);
-    
+
     // Update password when length changes
     if (isValidCharacterSelection()) {
       generatePassword();
-      changeBackgroundColor();
+      setTimeout(() => {
+        changeBackgroundColor();
+      }, 100); // Short delay to allow password to be updated
     }
+  });
+
+  // Add zoom functionality to password field
+  const passwordField = document.getElementById('passwordOutput');
+  passwordField.addEventListener('click', function() {
+    // Toggle the zoomed class to make text larger for better visibility
+    this.classList.toggle('zoomed');
+  });
+
+  // Remove zoom when focus is lost
+  passwordField.addEventListener('blur', function() {
+    this.classList.remove('zoomed');
   });
 
   // Check if at least one character type is selected
@@ -164,12 +230,12 @@ document.addEventListener('DOMContentLoaded', function () {
       if (isNaN(length) || length < 1 || length > 128) {
         throw new Error('Invalid password length');
       }
-      
+
       const uppercase = uppercaseCheck.checked;
       const lowercase = lowercaseCheck.checked;
       const numbers = numbersCheck.checked;
       const specialChars = specialCharsCheck.checked;
-      
+
       const charset = generateCharset(uppercase, lowercase, numbers, specialChars);
       if (charset.length === 0) {
         throw new Error('No character types selected');
@@ -178,14 +244,14 @@ document.addEventListener('DOMContentLoaded', function () {
       let password = '';
       const randomValues = new Uint32Array(length);
       window.crypto.getRandomValues(randomValues);
-      
+
       for (let i = 0; i < length; i++) {
         // Use the random value to get an index within the charset length
         const randomIndex = randomValues[i] % charset.length;
         password += charset[randomIndex];
       }
 
-      passwordOutput.value = password;
+      animatePasswordReveal(password);
       // Update ARIA attributes
       passwordOutput.setAttribute('aria-valuenow', password.length);
       updateAriaStrength(getPasswordStrength().score);
@@ -196,6 +262,88 @@ document.addEventListener('DOMContentLoaded', function () {
       passwordOutput.value = '';
       return null;
     }
+  }
+
+  // Sound effect functionality
+  let audioContext = null;
+
+  function playKeypressSound() {
+    // Only play sound if user hasn't disabled animations/sounds in system preferences
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return; // Skip playing sound if reduced motion is preferred
+    }
+
+    try {
+      // Initialize audio context on first interaction
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      // Create oscillator and gain node for a more pleasant beep sound
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      // Use a smoother waveform (sine) and higher frequency for a more pleasant sound
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(523 + Math.random() * 157, audioContext.currentTime); // C5 (523Hz) + randomization
+
+      // Configure gain for a smoother envelope
+      gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.005); // Very quick attack
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.03); // Quick decay
+
+      // Connect nodes
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      // Play the sound
+      oscillator.start();
+      oscillator.stop(audioContext.currentTime + 0.04); // Stop after 40ms
+    } catch (error) {
+      // Ignore errors if audio context is not supported
+      console.warn('Audio context not supported:', error);
+    }
+  }
+
+  function animatePasswordReveal(password) {
+    const passwordField = document.getElementById('passwordOutput');
+    passwordField.classList.add('generating');
+
+    // Clear the field
+    passwordField.value = '';
+
+    // Check if user prefers reduced motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
+      // If user prefers reduced motion, display password instantly
+      passwordField.value = password;
+      passwordField.classList.remove('generating');
+      setTimeout(() => {
+        getPasswordStrength();
+      }, 50);
+      return;
+    }
+
+    // Animate character reveal
+    let index = 0;
+    const revealInterval = setInterval(() => {
+      if (index < password.length) {
+        passwordField.value += password[index];
+        index++;
+
+        // Play a character reveal sound effect if available
+        playKeypressSound();
+      } else {
+        clearInterval(revealInterval);
+        passwordField.classList.remove('generating');
+
+        // Add a small delay before updating password strength to allow for visual effect
+        setTimeout(() => {
+          getPasswordStrength();
+        }, 100);
+      }
+    }, 30); // Speed of character reveal
   }
   
     function generateCharset(uppercase, lowercase, numbers, specialChars) {
@@ -209,14 +357,65 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   
     function changeBackgroundColor() {
-      const { score } = getPasswordStrength();
-      
-      // Map score (0-20) to a color gradient
-      // Red (weak) -> Orange -> Yellow -> Light Green -> Green (strong)
-      const hue = Math.min(120 * (score / 20), 120); // 0 (red) to 120 (green)
+      // Get the actual password strength without updating UI
+      const password = passwordOutput.value;
+      if (!password) {
+        // Default to dark background when no password
+        document.body.style.transition = 'background-color 0.5s ease-in-out';
+        document.body.style.backgroundColor = 'var(--bg-dark, #0a0a0a)';
+        return;
+      }
+
+      // Calculate score without updating UI elements
+      let score = 0;
+
+      // Length check (max 128)
+      const length = Math.min(password.length, 128);
+      if (length <= 8) score += length * 0.5; // 0-4 points
+      else if (length <= 16) score += 4 + (length - 8) * 0.75; // 4-10 points
+      else if (length <= 32) score += 10 + (length - 16) * 0.5; // 10-18 points
+      else score += 18 + (length - 32) * 0.2; // 18-33.2 points (capped at 30)
+
+      score = Math.min(score, 30); // Cap at 30 points for length
+
+      // Character type diversity - more points for using more character types
+      const hasLower = /[a-z]/.test(password);
+      const hasUpper = /[A-Z]/.test(password);
+      const hasNumber = /[0-9]/.test(password);
+      const hasSpecial = /[^a-zA-Z0-9]/.test(password);
+
+      const typeCount = [hasLower, hasUpper, hasNumber, hasSpecial].filter(Boolean).length;
+      score += (typeCount - 1) * 5; // Up to 15 points for character types (5 per type after first)
+
+      // Deductions for common patterns
+      if (/^[a-z]+$/.test(password)) score -= 3; // All lowercase
+      if (/^[A-Z]+$/.test(password)) score -= 3; // All uppercase
+      if (/^\d+$/.test(password)) score -= 3;    // All numbers
+      if (/(.)\1{2,}/.test(password)) score -= 2; // Repeated characters
+
+      // Common patterns (dates, sequences, etc.)
+      const commonPatterns = [
+        '123', 'abc', 'qwerty', 'password', 'admin', 'welcome', 'letmein',
+        'monkey', 'dragon', 'football', 'baseball', 'superman', 'iloveyou'
+      ];
+
+      const lowerPass = password.toLowerCase();
+      if (commonPatterns.some(pattern => lowerPass.includes(pattern))) {
+        score -= 4;
+      }
+
+      // Calculate final score (0-45 scale: 30 from length + 15 from character types)
+      score = Math.max(0, Math.min(45, score));
+
+      // Convert score to 0-100 scale for color mapping
+      const normalizedScore = (score / 45) * 100;
+
+      // Map score (0-100) to a color gradient: Red (0) -> Orange -> Yellow -> Light Green -> Green (100)
+      // HSL: Hue 0 (red) to 120 (green)
+      const hue = (normalizedScore / 100) * 120; // 0 (red) to 120 (green)
       const saturation = 80; // Keep saturation high for vibrant colors
-      const lightness = 50 + (score / 40) * 20; // Slightly lighter for better contrast
-      
+      const lightness = 20 + (normalizedScore / 100) * 30; // 20-50% for contrast
+
       document.body.style.transition = 'background-color 0.5s ease-in-out';
       document.body.style.backgroundColor = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
     }
@@ -305,15 +504,28 @@ document.addEventListener('DOMContentLoaded', function () {
       const strengthBar = document.getElementById('strengthBar');
       const strengthText = document.getElementById('strengthText');
       const strengthIndicator = document.getElementById('strengthIndicator');
-      
+
       // Scale the score to 100% based on the 0-45 scale
       const percentage = Math.min(100, (score / 45) * 100);
+
+      // Add animation class to strength elements for visual feedback
+      strengthBar.classList.add('strength-changing');
+      strengthText.classList.add('strength-changing');
+      strengthIndicator.classList.add('strength-changing');
+
       strengthBar.style.width = `${percentage}%`;
       strengthBar.style.backgroundColor = color;
       strengthText.textContent = strength;
       strengthText.style.color = color;
       strengthIndicator.textContent = emoji;
-      
+
+      // Remove animation class after transition completes
+      setTimeout(() => {
+        strengthBar.classList.remove('strength-changing');
+        strengthText.classList.remove('strength-changing');
+        strengthIndicator.classList.remove('strength-changing');
+      }, 500);
+
       return { score, strength, feedback };
     }
   });

@@ -4,12 +4,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="UTF-8">
   <title>Password Generator</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="new_styles.css">
   <link rel="icon" type="image/x-icon" href="/password.png">
 </head>
 <body>
   <div class="container" role="main">
-    <h1>Password Generator</h1>
+    <h1 class="typewriter" data-text="PASSWORD GENERATOR">PASSWORD GENERATOR</h1>
     <div>
     <div class="strength-meter">
       <div class="strength-indicator">
@@ -21,10 +21,19 @@
       </div>
     </div>
       <label for="lengthRange">Password Length:</label>
-      <input type="range" min="1" max="128" value="64" id="lengthRange" 
-             aria-valuemin="1" aria-valuemax="128" aria-valuenow="64" 
-             aria-labelledby="lengthLabel lengthValue">
-      <span id="lengthValue" aria-live="polite">64</span>
+      <div class="range-container">
+        <div class="range-ticks">
+          <span class="tick-label">1</span>
+          <span class="tick-label">32</span>
+          <span class="tick-label">64</span>
+          <span class="tick-label">96</span>
+          <span class="tick-label">128</span>
+        </div>
+        <input type="range" min="1" max="128" value="64" id="lengthRange"
+               aria-valuemin="1" aria-valuemax="128" aria-valuenow="64"
+               aria-labelledby="lengthLabel lengthValue">
+        <span id="lengthValue" class="range-display" aria-live="polite">64</span>
+      </div>
       <span id="lengthLabel" class="sr-only">Password length in characters</span>
     </div>
     <div>
