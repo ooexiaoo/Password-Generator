@@ -1,0 +1,634 @@
+/* Neobrutalist Modern Password Generator Styles */
+
+/* Root Variables */
+:root {
+  --primary-color: #FF4136;          /* Red */
+  --secondary-color: #0074D9;       /* Blue */
+  --accent-color: #2ECC40;          /* Green */
+  --dark-color: #111111;            /* Near black */
+  --light-color: #F5F5F5;           /* Off-white */
+  --highlight-color: #FFDC00;       /* Yellow */
+  --panel-bg: #FFFFFF;              /* White panel */
+  --border-thickness: 4px;          /* Bold borders */
+  --shadow-strength: 8px;           /* Strong shadows */
+}
+
+/* Base styles with neobrutalist aesthetic */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--light-color);
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  color: var(--dark-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: 
+    repeating-linear-gradient(0deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 20px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 20px);
+}
+
+/* Main content container */
+.container {
+  width: 100%;
+  max-width: 900px;
+  text-align: center;
+  margin: 0 auto;
+  padding: 30px;
+  background: var(--panel-bg);
+  border: var(--border-thickness) solid var(--dark-color);
+  position: relative;
+  box-shadow:
+    var(--shadow-strength) var(--shadow-strength) 0px 0px var(--dark-color),
+    calc(var(--shadow-strength) * 2) calc(var(--shadow-strength) * 2) 0px 0px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+/* Add a decorative accent element */
+.container::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 30px;
+  height: 30px;
+  background: var(--primary-color);
+  border: var(--border-thickness) solid var(--dark-color);
+  z-index: 1;
+}
+
+.container::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  width: 30px;
+  height: 30px;
+  background: var(--secondary-color);
+  border: var(--border-thickness) solid var(--dark-color);
+  z-index: 1;
+}
+
+/* Header styling */
+h1 {
+  margin: 0 0 30px 0;
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--dark-color);
+  border-bottom: var(--border-thickness) solid var(--primary-color);
+  padding-bottom: 15px;
+  position: relative;
+  font-weight: 800;
+}
+
+h1::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 50px;
+  height: var(--border-thickness);
+  background: var(--secondary-color);
+}
+
+/* Strength meter with neobrutalist styling */
+.strength-meter {
+  margin: 30px 0;
+  text-align: center;
+  padding: 20px;
+  border: var(--border-thickness) solid var(--dark-color);
+  background: var(--light-color);
+  position: relative;
+  box-shadow:
+    var(--shadow-strength) var(--shadow-strength) 0px 0px var(--dark-color),
+    calc(var(--shadow-strength) * 2) calc(var(--shadow-strength) * 2) 0px 0px rgba(0,0,0,0.1);
+}
+
+/* Arrange strength meter and range slider side by side on desktop */
+.strength-and-range {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 30px 0;
+}
+
+@media (max-width: 768px) {
+  .strength-and-range {
+    grid-template-columns: 1fr;
+  }
+}
+
+.strength-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.strength-emoji {
+  font-size: 4rem;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.strength-text {
+  font-size: 0.9em;
+  margin-top: 8px;
+  text-shadow: 0 0 5px currentColor;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  word-break: break-word;
+  min-height: 2.5em;
+}
+
+.strength-bar {
+  width: 100%;
+  height: 20px;
+  background-color: var(--light-color);
+  border: var(--border-thickness) solid var(--dark-color);
+  margin: 15px 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.strength-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 0.5s ease;
+  background: var(--primary-color);
+  position: relative;
+}
+
+/* Range slider with neobrutalist styling */
+label[for="lengthRange"] {
+  display: block;
+  margin: 0 0 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.range-container {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 15px;
+  border: var(--border-thickness) solid var(--dark-color);
+  background: var(--light-color);
+  position: relative;
+  box-shadow:
+    var(--shadow-strength) var(--shadow-strength) 0px 0px var(--dark-color),
+    calc(var(--shadow-strength) * 2) calc(var(--shadow-strength) * 2) 0px 0px rgba(0,0,0,0.1);
+}
+
+.range-ticks {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.tick-label {
+  color: var(--dark-color);
+  font-size: 0.8rem;
+  font-weight: 700;
+  min-width: 20px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.range-display {
+  position: absolute;
+  top: -30px;
+  right: 10px;
+  background: var(--dark-color);
+  color: var(--light-color);
+  padding: 5px 10px;
+  border: var(--border-thickness) solid var(--dark-color);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 25px;
+  background: transparent;
+  outline: none;
+  position: relative;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 20px;
+  cursor: pointer;
+  background: var(--light-color);
+  border: var(--border-thickness) solid var(--dark-color);
+  position: relative;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 30px;
+  height: 30px;
+  background: var(--primary-color);
+  border: var(--border-thickness) solid var(--dark-color);
+  cursor: pointer;
+  position: relative;
+  margin-top: -8px; /* Center the thumb on the track */
+  box-shadow: 
+    var(--shadow-strength) var(--shadow-strength) 0px 0px var(--dark-color),
+    calc(var(--shadow-strength) * 2) calc(var(--shadow-strength) * 2) 0px 0px rgba(0,0,0,0.1);
+}
+
+input[type="range"]::-moz-range-track {
+  width: 100%;
+  height: 20px;
+  cursor: pointer;
+  background: var(--light-color);
+  border: var(--border-thickness) solid var(--dark-color);
+  position: relative;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 30px;
+  height: 30px;
+  background: var(--primary-color);
+  border: var(--border-thickness) solid var(--dark-color);
+  cursor: pointer;
+  box-shadow: 
+    var(--shadow-strength) var(--shadow-strength) 0px 0px var(--dark-color),
+    calc(var(--shadow-strength) * 2) calc(var(--shadow-strength) * 2) 0px 0px rgba(0,0,0,0.1);
+}
+
+/* Checkbox styling with neobrutalist touch */
+.container > div:not(.password-container, .strength-meter, .range-container-wrapper) {
+  margin: 15px 0;
+  padding: 12px;
+  border: var(--border-thickness) solid var(--dark-color);
+  background: var(--light-color);
+  position: relative;
+  box-shadow:
+    var(--shadow-strength) var(--shadow-strength) 0px 0px var(--dark-color),
+    calc(var(--shadow-strength) * 2) calc(var(--shadow-strength) * 2) 0px 0px rgba(0,0,0,0.1);
+}
+
+/* Grid layout for options on desktop */
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin: 20px 0;
+}
+
+@media (max-width: 768px) {
+  .options-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  justify-content: flex-start;
+}
+
+label input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 25px;
+  height: 25px;
+  border: var(--border-thickness) solid var(--dark-color);
+  background: var(--light-color);
+  margin-right: 12px;
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+label input[type="checkbox"]::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 12px;
+  height: 12px;
+  background: var(--primary-color);
+  transition: transform 0.3s ease;
+}
+
+label input[type="checkbox"]:checked::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Generate button with bold neobrutalist styling */
+#generateBtn {
+  margin: 0;
+  padding: 18px 30px;
+  cursor: pointer;
+  border: var(--border-thickness) solid var(--dark-color);
+  background: var(--primary-color);
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-shadow:
+    var(--shadow-strength) var(--shadow-strength) 0px 0px var(--dark-color),
+    calc(var(--shadow-strength) * 2) calc(var(--shadow-strength) * 2) 0px 0px rgba(0,0,0,0.1);
+}
+
+#generateBtn:hover {
+  background: var(--secondary-color);
+  transform: translate(-2px, -2px);
+  box-shadow: 
+    calc(var(--shadow-strength) + 2px) calc(var(--shadow-strength) + 2px) 0px 0px var(--dark-color),
+    calc(var(--shadow-strength) * 2 + 4px) calc(var(--shadow-strength) * 2 + 4px) 0px 0px rgba(0,0,0,0.1);
+}
+
+#generateBtn:active {
+  transform: translate(0, 0);
+  box-shadow: 
+    var(--shadow-strength) var(--shadow-strength) 0px 0px var(--dark-color),
+    calc(var(--shadow-strength) * 2) calc(var(--shadow-strength) * 2) 0px 0px rgba(0,0,0,0.1);
+}
+
+/* Password output field with neobrutalist styling */
+#passwordOutput {
+  flex: 1;
+  min-width: 300px;
+  max-width: 100%;
+  width: 100%;
+  padding: 15px;
+  border: var(--border-thickness) solid var(--dark-color);
+  background: var(--light-color);
+  color: var(--dark-color);
+  font-family: monospace;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  line-height: 1.4;
+  box-shadow:
+    var(--shadow-strength) var(--shadow-strength) 0px 0px var(--dark-color),
+    calc(var(--shadow-strength) * 2) calc(var(--shadow-strength) * 2) 0px 0px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  text-align: left;
+  outline: none;
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: pre-wrap;
+  max-height: 150px;
+  overflow-y: auto;
+  resize: vertical;
+}
+
+#passwordOutput:focus {
+  box-shadow: 
+    var(--shadow-strength) var(--shadow-strength) 0px 0px var(--secondary-color),
+    calc(var(--shadow-strength) * 2) calc(var(--shadow-strength) * 2) 0px 0px rgba(0,0,0,0.1);
+}
+
+/* Copy button styling */
+#copyBtn {
+  padding: 18px 25px;
+  cursor: pointer;
+  border: var(--border-thickness) solid var(--dark-color);
+  background: var(--accent-color);
+  color: white;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  box-shadow: 
+    var(--shadow-strength) var(--shadow-strength) 0px 0px var(--dark-color),
+    calc(var(--shadow-strength) * 2) calc(var(--shadow-strength) * 2) 0px 0px rgba(0,0,0,0.1);
+  min-width: 140px;
+  align-self: stretch;
+}
+
+#copyBtn:hover {
+  background: var(--highlight-color);
+  color: var(--dark-color);
+  transform: translate(-2px, -2px);
+  box-shadow: 
+    calc(var(--shadow-strength) + 2px) calc(var(--shadow-strength) + 2px) 0px 0px var(--dark-color),
+    calc(var(--shadow-strength) * 2 + 4px) calc(var(--shadow-strength) * 2 + 4px) 0px 0px rgba(0,0,0,0.1);
+}
+
+#copyBtn:active {
+  transform: translate(0, 0);
+  box-shadow: 
+    var(--shadow-strength) var(--shadow-strength) 0px 0px var(--dark-color),
+    calc(var(--shadow-strength) * 2) calc(var(--shadow-strength) * 2) 0px 0px rgba(0,0,0,0.1);
+}
+
+/* Responsive layout for password and copy button */
+@media (min-width: 768px) {
+  .password-container {
+    display: flex;
+    gap: 15px;
+    min-width: 0;
+  }
+
+  #passwordOutput {
+    flex: 1;
+    min-width: 0;
+  }
+
+  #copyBtn {
+    align-self: stretch;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .password-container {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  #copyBtn {
+    width: 100%;
+    margin-top: 10px;
+    min-width: 0;
+  }
+}
+
+/* Compact layout for generate button and password container */
+.generate-section {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+@media (max-width: 768px) {
+  .generate-section {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 10px;
+  }
+
+  .password-container {
+    grid-column: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Allow flex items to shrink below content size */
+  }
+
+  #generateBtn {
+    grid-column: 1;
+  }
+
+  #copyBtn {
+    width: 100%;
+    margin-top: 10px;
+    min-width: 0;
+  }
+
+  /* Ensure password field doesn't overflow */
+  #passwordOutput {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+/* Notification system with neobrutalist styling */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  border: var(--border-thickness) solid var(--dark-color);
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  z-index: 1000;
+  max-width: 300px;
+  box-shadow: 
+    var(--shadow-strength) var(--shadow-strength) 0px 0px var(--dark-color),
+    calc(var(--shadow-strength) * 2) calc(var(--shadow-strength) * 2) 0px 0px rgba(0,0,0,0.1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.notification.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.notification.success {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.notification.error {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.notification.warning {
+  background-color: var(--highlight-color);
+  color: var(--dark-color);
+}
+
+.notification.info {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+/* Screen reader only class */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+  .container {
+    width: 90%;
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  #passwordOutput {
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    padding: 10px;
+    min-height: 60px;
+    word-break: break-all;
+    white-space: pre-wrap;
+    max-height: 120px;
+    min-width: 0;
+  }
+
+  #copyBtn {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 10px;
+    padding: 12px 20px;
+    min-width: 0;
+  }
+
+  .password-container {
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .strength-emoji {
+    font-size: 3rem;
+  }
+
+  .range-container {
+    padding: 10px;
+  }
+}}

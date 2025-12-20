@@ -215,12 +215,22 @@ document.addEventListener('DOMContentLoaded', function () {
   function updateAriaStrength(score) {
     const strengthIndicator = document.getElementById('strengthIndicator');
     const strengthText = document.getElementById('strengthText');
-    const strengthLevels = [
-      'very weak', 'weak', 'moderate', 'strong', 'very strong'
-    ];
-    const level = Math.min(Math.floor(score / 9), 4);
-    
-    strengthIndicator.setAttribute('aria-label', `Password strength: ${strengthLevels[level]}`);
+
+    // Define strength levels based on score (0-45 scale)
+    let strengthLevel;
+    if (score < 10) {
+      strengthLevel = 'very weak';
+    } else if (score < 20) {
+      strengthLevel = 'weak';
+    } else if (score < 30) {
+      strengthLevel = 'moderate';
+    } else if (score < 40) {
+      strengthLevel = 'strong';
+    } else {
+      strengthLevel = 'very strong';
+    }
+
+    strengthIndicator.setAttribute('aria-label', `Password strength: ${strengthLevel}`);
     strengthText.setAttribute('aria-live', 'polite');
   }
   
@@ -325,15 +335,25 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    // Animate character reveal
+    // Play sound only once at the beginning of the animation
+    playKeypressSound();
+
+    // For very long passwords, show instantly to avoid long animation time
+    if (password.length > 32) {
+      passwordField.value = password;
+      passwordField.classList.remove('generating');
+      setTimeout(() => {
+        getPasswordStrength();
+      }, 100);
+      return;
+    }
+
+    // Animate character reveal for shorter passwords
     let index = 0;
     const revealInterval = setInterval(() => {
       if (index < password.length) {
         passwordField.value += password[index];
         index++;
-
-        // Play a character reveal sound effect if available
-        playKeypressSound();
       } else {
         clearInterval(revealInterval);
         passwordField.classList.remove('generating');
@@ -432,101 +452,131 @@ document.addEventListener('DOMContentLoaded', function () {
     function getPasswordStrength() {
       const password = passwordOutput.value;
       if (!password) return { score: 0, feedback: 'Enter a password' };
-      
+
       let score = 0;
       const feedback = [];
-      
+
       // Length check (max 128)
       const length = Math.min(password.length, 128);
-      // More granular points for length - max 15 points (reduced from 20)
+      // More granular points for length - adjust to reach full strength sooner
       if (length <= 8) score += length * 0.5; // 0-4 points
       else if (length <= 16) score += 4 + (length - 8) * 0.75; // 4-10 points
-      else if (length <= 32) score += 10 + (length - 16) * 0.5; // 10-18 points
-      else score += 18 + (length - 32) * 0.2; // 18-33.2 points (capped at 30)
-      
+      else if (length <= 32) score += 10 + (length - 16) * 0.75; // 10-22 points (increased rate)
+      else score += 22 + (length - 32) * 0.5; // 22-47 points for longer passwords
+
       score = Math.min(score, 30); // Cap at 30 points for length
-      
+
       // Character type diversity - more points for using more character types
       const hasLower = /[a-z]/.test(password);
       const hasUpper = /[A-Z]/.test(password);
       const hasNumber = /[0-9]/.test(password);
       const hasSpecial = /[^a-zA-Z0-9]/.test(password);
-      
+
       const typeCount = [hasLower, hasUpper, hasNumber, hasSpecial].filter(Boolean).length;
       score += (typeCount - 1) * 5; // Up to 15 points for character types (5 per type after first)
-      
+
       // Deductions for common patterns
       if (/^[a-z]+$/.test(password)) score -= 3; // All lowercase
       if (/^[A-Z]+$/.test(password)) score -= 3; // All uppercase
       if (/^\d+$/.test(password)) score -= 3;    // All numbers
       if (/(.)\1{2,}/.test(password)) score -= 2; // Repeated characters
-      
+
       // Common patterns (dates, sequences, etc.)
       const commonPatterns = [
         '123', 'abc', 'qwerty', 'password', 'admin', 'welcome', 'letmein',
         'monkey', 'dragon', 'football', 'baseball', 'superman', 'iloveyou'
       ];
-      
+
       const lowerPass = password.toLowerCase();
       if (commonPatterns.some(pattern => lowerPass.includes(pattern))) {
         score -= 4;
         feedback.push('Avoid common words or patterns');
       }
-      
+
       // Calculate final score (0-45 scale: 30 from length + 15 from character types)
       score = Math.max(0, Math.min(45, score));
-      
-      // Determine strength level based on the new 0-45 scale
-      let strength, emoji, color;
-      if (score < 10) {
-        strength = 'Very Weak';
-        emoji = '😣';
+
+      // Calculate estimated time to crack password
+      let timeToCrack, emoji, color;
+
+      // Simple time estimation based on password characteristics
+      if (password.length < 4) {
+        timeToCrack = 'instantly';
+        emoji = '💥';
         color = '#ff4d4d'; // Red
-      } else if (score < 20) {
-        strength = 'Weak';
-        emoji = '😕';
-        color = '#ff9e4d'; // Orange
-      } else if (score < 30) {
-        strength = 'Moderate';
-        emoji = '😐';
+      } else if (password.length < 6) {
+        if (hasLower && hasUpper && hasNumber && hasSpecial) {
+          timeToCrack = 'seconds';
+        } else {
+          timeToCrack = 'instantly';
+        }
+        emoji = '⏱️';
+        color = password.length < 5 ? '#ff7d4d' : '#ff9e4d'; // Red to orange
+      } else if (password.length < 8) {
+        if (hasLower && hasUpper && hasNumber && hasSpecial) {
+          timeToCrack = 'minutes';
+        } else if (typeCount >= 3) {
+          timeToCrack = 'seconds';
+        } else {
+          timeToCrack = 'seconds';
+        }
+        emoji = '🕐';
+        color = '#ffbd4d'; // Lighter orange
+      } else if (password.length < 12) {
+        if (typeCount >= 3) {
+          timeToCrack = 'hours to days';
+        } else {
+          timeToCrack = 'minutes';
+        }
+        emoji = '🕒';
         color = '#ffd24d'; // Yellow
-      } else if (score < 40) {
-        strength = 'Strong';
-        emoji = '😊';
+      } else if (password.length < 16) {
+        if (typeCount >= 3) {
+          timeToCrack = 'months to years';
+        } else {
+          timeToCrack = 'days to weeks';
+        }
+        emoji = '🔒';
         color = '#6bd96a'; // Light green
       } else {
-        strength = 'Very Strong';
-        emoji = '🔒';
+        if (typeCount >= 3) {
+          timeToCrack = 'years to decades';
+        } else {
+          timeToCrack = 'months';
+        }
+        emoji = '🛡️';
         color = '#2ecc71'; // Green
       }
-      
-      // Update UI
+
+      // Update UI - with safety check for DOM elements
       const strengthBar = document.getElementById('strengthBar');
       const strengthText = document.getElementById('strengthText');
       const strengthIndicator = document.getElementById('strengthIndicator');
 
-      // Scale the score to 100% based on the 0-45 scale
-      const percentage = Math.min(100, (score / 45) * 100);
+      if (strengthBar && strengthText && strengthIndicator) {
+        // Scale the score to 100% based on the 0-45 scale
+        const percentage = Math.min(100, (score / 45) * 100);
 
-      // Add animation class to strength elements for visual feedback
-      strengthBar.classList.add('strength-changing');
-      strengthText.classList.add('strength-changing');
-      strengthIndicator.classList.add('strength-changing');
+        // Add animation class to strength elements for visual feedback
+        strengthBar.classList.add('strength-changing');
+        strengthText.classList.add('strength-changing');
+        strengthIndicator.classList.add('strength-changing');
 
-      strengthBar.style.width = `${percentage}%`;
-      strengthBar.style.backgroundColor = color;
-      strengthText.textContent = strength;
-      strengthText.style.color = color;
-      strengthIndicator.textContent = emoji;
+        strengthBar.style.width = `${percentage}%`;
+        strengthBar.style.backgroundColor = color;
+        strengthText.textContent = `Estimated time to crack: ${timeToCrack}`;
+        strengthText.style.color = color;
+        strengthIndicator.textContent = emoji;
 
-      // Remove animation class after transition completes
-      setTimeout(() => {
-        strengthBar.classList.remove('strength-changing');
-        strengthText.classList.remove('strength-changing');
-        strengthIndicator.classList.remove('strength-changing');
-      }, 500);
+        // Remove animation class after transition completes
+        setTimeout(() => {
+          strengthBar.classList.remove('strength-changing');
+          strengthText.classList.remove('strength-changing');
+          strengthIndicator.classList.remove('strength-changing');
+        }, 500);
+      }
 
-      return { score, strength, feedback };
+      return { score, feedback };
     }
   });
   
